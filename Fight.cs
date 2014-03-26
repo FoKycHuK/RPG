@@ -17,7 +17,6 @@ namespace MyRPG
         Bitmap playerIcon = (Bitmap)Bitmap.FromFile("Images\\playerFight.png");
         Creatures.Player player;
         IMonster monster;
-        bool isOver = false;
 
         public Fight(Creatures.Player player, IMonster monster)
         {
@@ -38,18 +37,13 @@ namespace MyRPG
 
         void Act()
         {
-            if (monster.attack - player.defence > 0)
-                player.hp -= monster.attack - player.defence;
-            if (player.attack - monster.defence > 0)
-                monster.hp -= player.attack - monster.defence;
-            if (monster.hp <= 0 || player.hp <= 0)
-                isOver = true;
+            Game.FightAct(monster);
         }
 
         protected override void OnPaint(PaintEventArgs e)
         {
             e.Graphics.TranslateTransform(0, 0);
-            e.Graphics.FillRectangle(Brushes.Gray, 0, 0, ClientSize.Width, ClientSize.Height);
+            e.Graphics.FillRectangle(Brushes.Black, 0, 0, ClientSize.Width, ClientSize.Height);
             e.Graphics.DrawImage(playerIcon, 0, 0);
             e.Graphics.DrawImage(monsterIcon, ClientSize.Width - ElementSize, 0);
             e.Graphics.ResetTransform();
@@ -62,32 +56,19 @@ namespace MyRPG
         {
             Act();
             Invalidate();
-            if (isOver)
+            if (Game.FightIsOver)
             {
                 timer.Stop();
                 if (player.hp <= 0)
                 {
-                    MessageBox.Show("You lose.");
+                    Game.GameOver();
+                    Game.FightIsOver = false;
                     this.Close();
+                    
                 }
                 else
                 {
-                    MessageBox.Show("You win! Gained exp: " + monster.expGain.ToString());
-                    player.exp += monster.expGain;
-                    while (player.exp >= player.level * 100)
-                    {
-                        Game.Level();
-                        player.level++;
-                        player.hp = player.level * 10;
-                        player.exp -= (player.level - 1) * 100;
-                        if (player.exp < 0)
-                            player.exp = 0;
-                    }
-                    if (monster.GetCreatureType() == CreatureType.Boss)
-                    {
-                        MessageBox.Show("You killed boss, and going to next Stage!");
-                        Game.CreateMap();
-                    }
+                    Game.WinInFight(monster);
                     this.Close();
                 }
             }

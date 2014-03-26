@@ -71,7 +71,7 @@ namespace MyRPG
         protected override void OnPaint(PaintEventArgs e)
         {
             //e.Graphics.DrawImage((Bitmap)Bitmap.FromFile("Images\\" + Game.StageName + ".jpg"), 0, 0);
-            e.Graphics.FillRectangle(Brushes.Black, 0, 0, ElementSize * Game.MapWidth, ElementSize);
+            e.Graphics.FillRectangle(Brushes.Gray, 0, 0, ElementSize * Game.MapWidth, ElementSize);
             e.Graphics.TranslateTransform(0, ElementSize);
             foreach (var a in animations)
                 e.Graphics.DrawImage(bitmaps[a.Creature.GetCreatureType()], a.Location);
@@ -85,7 +85,7 @@ namespace MyRPG
                     player.attack,
                     player.defence,
                     Game.StageName), 
-                new Font("Arial", 16), Brushes.Green, 0, 0);
+                new Font("Arial", 16), Brushes.White, 0, 0);
         }
 
         int tickCount = 0;
@@ -108,74 +108,7 @@ namespace MyRPG
                     else
                     {
                         timer.Stop();
-                        if (Game.Map[x, y].GetCreatureType() == CreatureType.HealingPotion)
-                        {
-                            player.hp = player.level * 10;
-                            Game.Map[x, y] = player;
-                        }
-                        if (Game.Map[x, y] is ITreasure)
-                        {
-                            var aw = (ITreasure)Game.Map[x, y];
-                            Game.Map[x, y] = player;
-                            player.attack += aw.AwardAttack;
-                            player.exp += aw.AwardExp;
-                            player.defence += aw.AwardDefence;
-                            switch (aw.GetCreatureType())
-                            {
-                                case CreatureType.Armor:
-                                    MessageBox.Show("You find armor, better, then you have. You're defence increased on 1!");
-                                    break;
-                                case CreatureType.Sword:
-                                    MessageBox.Show("You find sword, better, then you have. You're attack increased on 2!");
-                                    break;
-                                case CreatureType.Grave:
-                                    if (InGrave())
-                                    {
-                                        MessageBox.Show(string.Format("You enter in the grave, and find curse/blessing! Gained: {0} Attack, {1} Defence.", aw.AwardAttack, aw.AwardDefence));
-                                        if (Game.rand.Next(0, 1000) > 800)
-                                        {
-                                            MessageBox.Show("And you're under attack!!!");
-                                            Game.Fight(player, new Creatures.Monster() { 
-                                                hp = Game.Stage * 14, 
-                                                attack = Game.Stage * 3, 
-                                                defence = (Game.Stage + 1) / 2, 
-                                                expGain = Game.Stage * 20 
-                                            });
-                                        }
-                                    }
-                                    else
-                                    {
-                                        player.attack -= aw.AwardAttack;
-                                        player.defence -= aw.AwardDefence;
-                                        var gainedExp = Game.rand.Next(0, Game.Stage * 50);
-                                        player.exp += gainedExp;
-                                        MessageBox.Show(string.Format("You running away, and gain some exp: {0}", gainedExp));
-                                    }
-                                    break;
-                                default:
-                                    MessageBox.Show(string.Format("You find some treasures! Gained: {0} Exp, {1} Attack, {2} Defence.", aw.AwardExp, aw.AwardAttack, aw.AwardDefence));
-                                    break;
-                            }
-                        }
-                        if (nextCreature is IMonster ^ Game.Map[x,y] is IMonster)
-                            if (nextCreature.GetCreatureType() == CreatureType.Player)
-                            {
-                                Game.Fight(
-                                    (Creatures.Player)nextCreature,
-                                    (IMonster)Game.Map[x, y]
-                                    );
-                                if (Game.Map[x,y] != null && Game.Map[x, y].GetCreatureType() != CreatureType.Boss)
-                                    Game.Map[x, y] = player;
-                            }
-                            else
-                            {
-                                Game.Fight(
-                                    (Creatures.Player)Game.Map[x, y],
-                                    (IMonster)nextCreature
-                                    );
-                                if (nextCreature.GetCreatureType() != CreatureType.Boss)
-                                    Game.Map[x, y] = player;
-                            }
+                        Game.Conflict(nextCreature, x, y);
                         timer.Start();
                     }
                 }
