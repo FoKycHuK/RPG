@@ -23,11 +23,11 @@ namespace MyRPG
         const int ElementSize = 32;
         Dictionary<CreatureType, Bitmap> bitmaps = new Dictionary<CreatureType, Bitmap>();
         static List<CreatureAnimation> animations = new List<CreatureAnimation>();
-        bool aa = true;
 
 
         public MyWindow()
         {
+            Game.StageChanged += ChangeBackground;
             BackgroundImage = (Bitmap)Bitmap.FromFile("Images\\" + Game.StageName + ".jpg");
             StartPosition = FormStartPosition.CenterScreen;
             ClientSize = new Size(ElementSize * Game.MapWidth, ElementSize * Game.MapHeight + ElementSize);
@@ -60,19 +60,17 @@ namespace MyRPG
                         Location = new Point(x * ElementSize, y * ElementSize)
                     });
                 }
-            animations = animations.OrderByDescending(z => (int)z.Creature.GetCreatureType()).ToList();4
+            animations = animations.OrderByDescending(z => (int)z.Creature.GetCreatureType()).ToList();
         }
-
+        void ChangeBackground()
+        {
+            this.BackgroundImage = (Bitmap)Bitmap.FromFile("Images\\" + Game.StageName + ".jpg");
+        }
         protected override void OnPaint(PaintEventArgs e)
         {
-            if (aa)
-            {
-                this.BackgroundImage = (Bitmap)Bitmap.FromFile("Images\\" + Game.StageName + ".jpg");
-                aa = false;
-            }
-            e.Graphics.TranslateTransform(0, ElementSize);
             //e.Graphics.DrawImage((Bitmap)Bitmap.FromFile("Images\\" + Game.StageName + ".jpg"), 0, 0);
-            //e.Graphics.FillRectangle(Brushes.Black, 0, 0, ElementSize * Game.MapWidth, ElementSize * Game.MapHeight);
+            e.Graphics.FillRectangle(Brushes.Black, 0, 0, ElementSize * Game.MapWidth, ElementSize);
+            e.Graphics.TranslateTransform(0, ElementSize);
             foreach (var a in animations)
                 e.Graphics.DrawImage(bitmaps[a.Creature.GetCreatureType()], a.Location);
             e.Graphics.ResetTransform();

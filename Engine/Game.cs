@@ -103,6 +103,9 @@ namespace MyRPG
             form.Controls.Add(buttonAttack);
             form.ShowDialog();
         }
+        public static event Action StageChanged;
+        public static event Func<bool> Grave;
+        public static event Action Level;
         public static Random rand = new Random();
         public static ICreature[,] Map;
         public static int MapWidth;
@@ -110,6 +113,7 @@ namespace MyRPG
         public static Creatures.Player player;
         public static int Stage;
         public static string StageName;
+        static bool firstCreating = true;
         public static void Begin()
         {
             player = new Creatures.Player() { hp = 10, attack = 2, defence = 1, level = 1, exp = 0 };
@@ -163,6 +167,10 @@ namespace MyRPG
                     MessageBox.Show("Error in stage defination");
                     break;
             }
+            if (firstCreating)
+                firstCreating = false;
+            else
+                StageChanged();
             MapWidth = 30;
             MapHeight = 19;
             Map = new ICreature[MapWidth, MapHeight];
