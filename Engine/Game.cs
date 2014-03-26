@@ -26,10 +26,14 @@ namespace MyRPG
         public static string StageName;
         static bool firstCreating = true;
         public static bool FightIsOver;
+        public static bool GameMode;
+        public static event Func<bool> ChooseMode;
         public static void Begin()
         {
             player = new Creatures.Player() { hp = 10, attack = 2, defence = 1, level = 1, exp = 0 };
             Stage = 0;
+            GameMode = ChooseMode();
+            //ну го
             CreateMap();
         }
         public static void Spawner(ICreature creature)
@@ -119,15 +123,15 @@ namespace MyRPG
                             switch (aw.GetCreatureType())
                             {
                                 case CreatureType.Armor:
-                                    MessageBox.Show("You find armor, better, then you have. You're defence increased on 1!");
+                                    MessageBox.Show("You found an armor better than you have. Your defence increased on 1!");
                                     break;
                                 case CreatureType.Sword:
-                                    MessageBox.Show("You find sword, better, then you have. You're attack increased on 2!");
+                                    MessageBox.Show("You found a sword better than you have. Your attack increased on 2!");
                                     break;
                                 case CreatureType.Grave:
                                     if (Grave())
                                     {
-                                        MessageBox.Show(string.Format("You enter in the grave, and find curse/blessing! Gained: {0} Attack, {1} Defence.", aw.AwardAttack, aw.AwardDefence));
+                                        MessageBox.Show(string.Format("You entered in the grave and found curse/blessing! Gained: {0} Attack, {1} Defence.", aw.AwardAttack, aw.AwardDefence));
                                         if (Game.rand.Next(0, 1000) > 800)
                                         {
                                             MessageBox.Show("And you're under attack!!!");
@@ -145,11 +149,11 @@ namespace MyRPG
                                         player.defence -= aw.AwardDefence;
                                         var gainedExp = Game.rand.Next(0, Game.Stage * 50);
                                         player.exp += gainedExp;
-                                        MessageBox.Show(string.Format("You running away, and gain some exp: {0}", gainedExp));
+                                        MessageBox.Show(string.Format("You running away and gain some exp: {0}", gainedExp));
                                     }
                                     break;
                                 default:
-                                    MessageBox.Show(string.Format("You find some treasures! Gained: {0} Exp, {1} Attack, {2} Defence.", aw.AwardExp, aw.AwardAttack, aw.AwardDefence));
+                                    MessageBox.Show(string.Format("You found some treasures! Gained: {0} Exp, {1} Attack, {2} Defence.", aw.AwardExp, aw.AwardAttack, aw.AwardDefence));
                                     break;
                             }
                         }
@@ -182,6 +186,12 @@ namespace MyRPG
             if (monster.hp <= 0 || player.hp <= 0)
                 FightIsOver = true;
         }
+        public static void EndOfFight(IMonster monster)
+        {
+            if (player.hp <= 0)
+                Game.GameOver();
+            Game.WinInFight(monster);
+        }
         public static void WinInFight(IMonster monster)
         {
             MessageBox.Show("You win! Gained exp: " + monster.expGain.ToString());
@@ -197,7 +207,7 @@ namespace MyRPG
             }
             if (monster.GetCreatureType() == CreatureType.Boss)
             {
-                MessageBox.Show("You killed boss, and going to next Stage!");
+                MessageBox.Show("You killed the boss and go to the next stage!");
                 CreateMap();
             }
             FightIsOver = false;
@@ -209,7 +219,7 @@ namespace MyRPG
         }
         public static void GameOver()
         {
-            MessageBox.Show("You lose. GAME OVER.");
+            MessageBox.Show("You lost. GAME OVER.");
             Environment.Exit(0);
         }
     }

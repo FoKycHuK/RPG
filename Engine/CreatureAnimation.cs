@@ -3,17 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Forms;
 using System.Drawing;
 
 namespace MyRPG
 {
-    class Program
+    class CreatureAnimation
     {
-        [STAThread]
-        static void Main(string[] args)
-        {
-            Application.Run(new MyWindow());
-        }
+        public ICreature Creature;
+        public CreatureCommand Command;
+        public Point Location;
     }
 }

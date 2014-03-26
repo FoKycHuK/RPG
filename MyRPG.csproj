@@ -60,6 +60,7 @@
     <Compile Include="Creatures\Monster.cs" />
     <Compile Include="Creatures\Player.cs" />
     <Compile Include="Creatures\Wall.cs" />
+    <Compile Include="Engine\CreatureAnimation.cs" />
     <Compile Include="Engine\Game.cs" />
     <Compile Include="Engine\CreatureType.cs" />
     <Compile Include="Engine\CreatureCommand.cs" />

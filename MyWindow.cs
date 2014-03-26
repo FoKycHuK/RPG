@@ -8,14 +8,6 @@ using System.Windows.Forms;
 
 namespace MyRPG
 {
-
-    public class CreatureAnimation
-    {
-        public ICreature Creature;
-        public CreatureCommand Command;
-        public Point Location;
-    }
-
     public class MyWindow : Form
     {
         Creatures.Player player;
@@ -27,6 +19,8 @@ namespace MyRPG
 
         public MyWindow()
         {
+            Game.ChooseMode += ChooseMode;
+            Game.Begin();
             Game.StageChanged += ChangeBackground;
             Game.Level = LevelUp;
             Game.Grave += InGrave;
@@ -100,8 +94,8 @@ namespace MyRPG
                 for (int x = 0; x < Game.MapWidth; x++) for (int y = 0; y < Game.MapHeight; y++) Game.Map[x, y] = null;
                 foreach (var e in animations)
                 {
-                    var x = e.Location.X / 32;
-                    var y = e.Location.Y / 32;
+                    var x = e.Location.X / ElementSize;
+                    var y = e.Location.Y / ElementSize;
                     var nextCreature = e.Creature;
                     if (Game.Map[x, y] == null)
                         Game.Map[x, y] = nextCreature;
@@ -140,11 +134,7 @@ namespace MyRPG
                 Left = 15,
                 Top = 50
             };
-            buttonAttack.Click += (sender, e) =>
-            {
-                form.Close();
-            };
-
+            buttonAttack.Click += (sender, e) => form.Close();
             var buttonDefence = new Button()
             {
                 Text = "Leave",
@@ -205,6 +195,47 @@ namespace MyRPG
             form.Controls.Add(buttonDefence);
             form.Controls.Add(buttonAttack);
             form.ShowDialog();
+        }
+        bool ChooseMode()
+        {
+            var answer = true;
+            var form = new Form()
+            {
+                ControlBox = false,
+                Size = new Size(350, 150),
+                Text = "CHOOSE YOUR DESTENY!",
+                StartPosition = FormStartPosition.CenterScreen
+            };
+            var lab = new Label()
+            {
+                Text = "This is RPG. You can choose one of game modes:",
+                Top = 10,
+                Left = form.Size.Width / 10,
+                Size = new Size(300, 25)
+            };
+            var buttonAttack = new Button()
+            {
+                Text = "Adventure",
+                Left = 15,
+                Top = 50
+            };
+            buttonAttack.Click += (sender, e) => form.Close();
+            var buttonDefence = new Button()
+            {
+                Text = "Surviving",
+                Left = form.Size.Width - buttonAttack.Width - 50,
+                Top = 50
+            };
+            buttonDefence.Click += (sender, e) =>
+            {
+                form.Close();
+                answer = false;
+            };
+            form.Controls.Add(lab);
+            form.Controls.Add(buttonDefence);
+            form.Controls.Add(buttonAttack);
+            form.ShowDialog();
+            return answer;
         }
     }
 }

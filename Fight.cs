@@ -59,18 +59,8 @@ namespace MyRPG
             if (Game.FightIsOver)
             {
                 timer.Stop();
-                if (player.hp <= 0)
-                {
-                    Game.GameOver();
-                    Game.FightIsOver = false;
-                    this.Close();
-                    
-                }
-                else
-                {
-                    Game.WinInFight(monster);
-                    this.Close();
-                }
+                Game.EndOfFight(monster);
+                this.Close();
             }
         }
     }
