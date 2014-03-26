@@ -28,6 +28,8 @@ namespace MyRPG
         public MyWindow()
         {
             Game.StageChanged += ChangeBackground;
+            Game.Level = LevelUp;
+            Game.Grave += InGrave;
             BackgroundImage = (Bitmap)Bitmap.FromFile("Images\\" + Game.StageName + ".jpg");
             StartPosition = FormStartPosition.CenterScreen;
             ClientSize = new Size(ElementSize * Game.MapWidth, ElementSize * Game.MapHeight + ElementSize);
@@ -127,7 +129,7 @@ namespace MyRPG
                                     MessageBox.Show("You find sword, better, then you have. You're attack increased on 2!");
                                     break;
                                 case CreatureType.Grave:
-                                    if (Game.InGrave())
+                                    if (InGrave())
                                     {
                                         MessageBox.Show(string.Format("You enter in the grave, and find curse/blessing! Gained: {0} Attack, {1} Defence.", aw.AwardAttack, aw.AwardDefence));
                                         if (Game.rand.Next(0, 1000) > 800)
@@ -181,6 +183,95 @@ namespace MyRPG
             tickCount++;
             if (tickCount == 8) tickCount = 0;
             Invalidate();
+        }
+        bool InGrave()
+        {
+            var answer = true;
+            var form = new Form()
+            {
+                ControlBox = false,
+                Size = new Size(350, 150),
+                Text = "Grave",
+                StartPosition = FormStartPosition.CenterScreen
+            };
+            var lab = new Label()
+            {
+                Text = "You find grave. Your choise:",
+                Top = 10,
+                Left = form.Size.Width / 4,
+                Size = new Size(300, 25)
+            };
+            var buttonAttack = new Button()
+            {
+                Text = "Go inside!",
+                Left = 15,
+                Top = 50
+            };
+            buttonAttack.Click += (sender, e) =>
+            {
+                form.Close();
+            };
+
+            var buttonDefence = new Button()
+            {
+                Text = "Leave",
+                Left = form.Size.Width - buttonAttack.Width - 50,
+                Top = 50
+            };
+            buttonDefence.Click += (sender, e) =>
+            {
+                form.Close();
+                answer = false;
+            };
+            form.Controls.Add(lab);
+            form.Controls.Add(buttonDefence);
+            form.Controls.Add(buttonAttack);
+            form.ShowDialog();
+            return answer;
+        }
+        void LevelUp()
+        {
+            var form = new Form()
+            {
+                ControlBox = false,
+                Size = new Size(350, 150),
+                Text = "Level UP",
+                StartPosition = FormStartPosition.CenterScreen
+            };
+            var lab = new Label()
+            {
+                Text = "Level up! Choose your boost:",
+                Top = 10,
+                Left = form.Size.Width / 4,
+                Size = new Size(300, 25)
+            };
+            var buttonAttack = new Button()
+            {
+                Text = "Attack",
+                Left = 15,
+                Top = 50
+            };
+            buttonAttack.Click += (sender, e) =>
+            {
+                player.attack += 2;
+                form.Close();
+            };
+
+            var buttonDefence = new Button()
+            {
+                Text = "Defence",
+                Left = form.Size.Width - buttonAttack.Width - 50,
+                Top = 50
+            };
+            buttonDefence.Click += (sender, e) =>
+            {
+                player.defence += 1;
+                form.Close();
+            };
+            form.Controls.Add(lab);
+            form.Controls.Add(buttonDefence);
+            form.Controls.Add(buttonAttack);
+            form.ShowDialog();
         }
     }
 }

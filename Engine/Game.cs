@@ -14,98 +14,9 @@ namespace MyRPG
         {
             return x >= 0 && y >= 0 && x < MapWidth && y < MapHeight;
         }
-        public static bool InGrave()
-        {
-            var answer = true;
-            var form = new Form()
-            {
-                ControlBox = false,
-                Size = new Size(350, 150),
-                Text = "Grave",
-                StartPosition = FormStartPosition.CenterScreen
-            };
-            var lab = new Label()
-            {
-                Text = "You find grave. Your choise:",
-                Top = 10,
-                Left = form.Size.Width / 4,
-                Size = new Size(300, 25)
-            };
-            var buttonAttack = new Button()
-            {
-                Text = "Go inside!",
-                Left = 15,
-                Top = 50
-            };
-            buttonAttack.Click += (sender, e) =>
-            {
-                form.Close();
-            };
-
-            var buttonDefence = new Button()
-            {
-                Text = "Leave",
-                Left = form.Size.Width - buttonAttack.Width - 50,
-                Top = 50
-            };
-            buttonDefence.Click += (sender, e) =>
-            {
-                form.Close();
-                answer = false;
-            };
-            form.Controls.Add(lab);
-            form.Controls.Add(buttonDefence);
-            form.Controls.Add(buttonAttack);
-            form.ShowDialog();
-            return answer;
-        }
-        public static void LevelUp()
-        {
-            var form = new Form()
-            {
-                ControlBox = false,
-                Size = new Size(350, 150),
-                Text = "Level UP",
-                StartPosition = FormStartPosition.CenterScreen
-            };
-            var lab = new Label()
-            {
-                Text = "Level up! Choose your boost:",
-                Top = 10,
-                Left = form.Size.Width / 4,
-                Size = new Size(300, 25)
-            };
-            var buttonAttack = new Button()
-            {
-                Text = "Attack",
-                Left = 15,
-                Top = 50
-            };
-            buttonAttack.Click += (sender, e) =>
-                {
-                    player.attack += 2;
-                    form.Close();
-                };
-
-            var buttonDefence = new Button()
-            {
-                Text = "Defence",
-                Left = form.Size.Width - buttonAttack.Width - 50,
-                Top = 50
-            };
-            buttonDefence.Click += (sender, e) =>
-            {
-                player.defence += 1;
-                form.Close();
-            };
-            form.Controls.Add(lab);
-            form.Controls.Add(buttonDefence);
-            form.Controls.Add(buttonAttack);
-            form.ShowDialog();
-        }
         public static event Action StageChanged;
         public static event Func<bool> Grave;
-        public static event Action Level;
+        public static Action Level;
         public static Random rand = new Random();
         public static ICreature[,] Map;
         public static int MapWidth;
@@ -175,7 +86,7 @@ namespace MyRPG
             MapHeight = 19;
             Map = new ICreature[MapWidth, MapHeight];
             Map[0, 0] = player;
-            Map[MapWidth - 1, MapHeight - 1] = new Creatures.Boss() { hp = Stage * 25, attack = Stage * 3, defence = Stage, expGain = Stage * 70 };
+            Map[/*MapWidth - 1*/ 0, /*MapHeight -*/ 1] = new Creatures.Boss() { hp = 0, attack = Stage * 3, defence = Stage, expGain = Stage * 70 };
             for (var i = 0; i < 2 + Stage * 3; i++)
                 Spawner(new Creatures.Monster() { hp = Stage * 7, attack = Stage * 2, defence = (Stage + 1) / 2 , expGain = Stage * 10 });
             if (rand.Next(0, 1000) < 600 + Stage * 25 )

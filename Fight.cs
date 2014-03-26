@@ -49,7 +49,7 @@ namespace MyRPG
         protected override void OnPaint(PaintEventArgs e)
         {
             e.Graphics.TranslateTransform(0, 0);
-            e.Graphics.FillRectangle(Brushes.Black, 0, 0, ClientSize.Width, ClientSize.Height);
+            e.Graphics.FillRectangle(Brushes.Gray, 0, 0, ClientSize.Width, ClientSize.Height);
             e.Graphics.DrawImage(playerIcon, 0, 0);
             e.Graphics.DrawImage(monsterIcon, ClientSize.Width - ElementSize, 0);
             e.Graphics.ResetTransform();
@@ -76,7 +76,7 @@ namespace MyRPG
                     player.exp += monster.expGain;
                     while (player.exp >= player.level * 100)
                     {
-                        Game.LevelUp();
+                        Game.Level();
                         player.level++;
                         player.hp = player.level * 10;
                         player.exp -= (player.level - 1) * 100;
