@@ -10,7 +10,7 @@ namespace MyRPG.Creatures
     {
         public PowerfulMonster()
         {
-            hp = Game.Stage * 12;
+            hp = Game.Stage * 10;
             attack = Game.Stage * 2 + 1;
             defence = (Game.Stage + 2) / 2;
             expGain = Game.Stage * 20;

@@ -227,7 +227,7 @@ namespace MyRPG
                 };
             var buttonDefence = new Button()
             {
-                Text = "Surviving",
+                Text = "Survival",
                 Left = form.Size.Width - buttonAttack.Width - 50,
                 Top = 50
             };

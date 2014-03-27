@@ -89,6 +89,10 @@ namespace MyRPG
         public static void LoadAdventureMap()
         {
             Stage++;
+            if (Stage > 8)
+            {
+                MessageBox.Show("You complete my game. Good job! Try survival mod!");
+            }
             StageDefination();
             StageChanged();
             Map = new ICreature[MapWidth, MapHeight];
@@ -278,10 +282,7 @@ namespace MyRPG
             {
                 MessageBox.Show("You killed the boss and go to the next stage!");
                 if (IsAdventure)
-                {
-                    MessageBox.Show("not realized");
-                    Environment.Exit(0);
-                }
+                    LoadAdventureMap();
                 else
                     CreateRandomMap();
             }
