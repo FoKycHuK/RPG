@@ -8,7 +8,11 @@ namespace MyRPG.Creatures
 {
     class Chest:ICreature, ITreasure
     {
-
+        public Chest()
+        {
+            AwardAttack = Game.rand.Next(0, 2);
+            AwardExp = Game.rand.Next(Game.Stage * 50, Game.Stage * 100);
+        }
         public CreatureType GetCreatureType()
         {
             return CreatureType.Chest;

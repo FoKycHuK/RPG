@@ -8,6 +8,10 @@ namespace MyRPG.Creatures
 {
     class Sword : ICreature, ITreasure
     {
+        public Sword()
+        {
+            AwardAttack = 2;
+        }
         public CreatureType GetCreatureType()
         {
             return CreatureType.Sword;

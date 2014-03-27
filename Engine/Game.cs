@@ -5,36 +5,38 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Drawing;
+using System.IO;
 
 namespace MyRPG
 {
     public class Game
     {
-        public static bool InsideWorld(int x, int y)
-        {
-            return x >= 0 && y >= 0 && x < MapWidth && y < MapHeight;
-        }
         public static event Action StageChanged;
         public static event Func<bool> Grave;
+        public static event Action ChooseMode;
         public static Action Level;
         public static Random rand = new Random();
         public static ICreature[,] Map;
-        public static int MapWidth;
-        public static int MapHeight;
+        public static int MapWidth = 30;
+        public static int MapHeight = 19;
         public static Creatures.Player player;
         public static int Stage;
         public static string StageName;
-        static bool firstCreating = true;
         public static bool FightIsOver;
-        public static bool GameMode;
-        public static event Func<bool> ChooseMode;
+        public static bool IsAdventure;
+
         public static void Begin()
         {
             player = new Creatures.Player() { hp = 10, attack = 2, defence = 1, level = 1, exp = 0 };
             Stage = 0;
-            GameMode = ChooseMode();
-            //ну го
-            CreateMap();
+            ChooseMode();
+            if (IsAdventure)
+            {
+                MessageBox.Show("not realized");
+                Environment.Exit(0);
+            }
+            else
+                CreateRandomMap();
         }
         public static void Spawner(ICreature creature)
         {
@@ -50,22 +52,99 @@ namespace MyRPG
 
             }
         }
-        public static void CreateMap()
+        public static void CreateRandomMap()
         {
             Stage++;
+            StageDefination();
+            StageChanged();
+            Map = new ICreature[MapWidth, MapHeight];
+            Map[0, 0] = player;
+            Map[2, 0] = new Creatures.Wall();
+            Map[3, 0] = new Creatures.Wall();
+            Map[4, 0] = new Creatures.Wall();
+            Map[5, 0] = new Creatures.Wall();
+            Map[10, 10] = new Creatures.Wall();
+            Map[10, 11] = new Creatures.Wall();
+            Map[11, 11] = new Creatures.Wall();
+            Map[11, 10] = new Creatures.Wall();
+            Map[5, 1] = new Creatures.Wall();
+            Map[5, 2] = new Creatures.Wall();
+            Map[1, 0] = new Creatures.Boss();
+            for (var i = 0; i < 2 + Stage * 3; i++)
+                Spawner(new Creatures.Monster());
+            if (rand.Next(0, 1000) < 600 + Stage * 25 )
+                Spawner(new Creatures.Armor());
+            if (rand.Next(0, 1000) < 700 - Stage * 50)
+                Spawner(new Creatures.HealingPotion());
+            if (rand.Next(0, 1000) < 600 + Stage * 25)
+                Spawner(new Creatures.Sword());
+            if (rand.Next(0, 1000) < 200 + Stage * 25)
+                Spawner(new Creatures.Grave());
+            if (rand.Next(0, 1000) > 300 + Stage * 10)
+                Spawner(new Creatures.Chest() { });
+            
+        }
+
+        public static void LoadAdventureMap()
+        {
+            Stage++;
+            StageDefination();
+            StageChanged();
+            Map = new ICreature[MapWidth, MapHeight];
+            var file = File.ReadAllLines("Images\\Map" + Stage + ".txt");
+            for (var i = 0; i < MapHeight; i++)
+                for (var j = 0; j < MapWidth; j++)
+                    switch (file[i][j])
+                    {
+                        case 'W':
+                            Map[j, i] = new Creatures.Wall();
+                            break;
+                        case 'M':
+                            Map[j, i] = new Creatures.Monster();
+                            break;
+                        case 'C':
+                            Map[j, i] = new Creatures.Chest();
+                            break;
+                        case 'G':
+                            Map[j, i] = new Creatures.Grave();
+                            break;
+                        case 'H':
+                            Map[j, i] = new Creatures.HealingPotion();
+                            break;
+                        case 'B':
+                            Map[j, i] = new Creatures.Boss();
+                            break;
+                        case 'S':
+                            Map[j, i] = new Creatures.Sword();
+                            break;
+                        case 'A':
+                            Map[j, i] = new Creatures.Armor();
+                            break;
+                        case 'P':
+                            Map[j, i] = player;
+                            break;
+                        default:
+                            break;
+
+                    }
+
+        }
+
+        public static void StageDefination()
+        {
             switch (Stage % 8)
             {
                 case 1:
                     StageName = "Valley";
                     break;
                 case 2:
-                    StageName = "Cave";
+                    StageName = "Desert";
                     break;
                 case 3:
                     StageName = "Quarry";
                     break;
                 case 4:
-                    StageName = "Desert";
+                    StageName = "Cave";
                     break;
                 case 5:
                     StageName = "North";
@@ -83,27 +162,10 @@ namespace MyRPG
                     MessageBox.Show("Error in stage defination");
                     break;
             }
-            if (firstCreating)
-                firstCreating = false;
-            else
-                StageChanged();
-            MapWidth = 30;
-            MapHeight = 19;
-            Map = new ICreature[MapWidth, MapHeight];
-            Map[0, 0] = player;
-            Map[/*MapWidth - 1*/ 0, /*MapHeight -*/ 1] = new Creatures.Boss() { hp = 0, attack = Stage * 3, defence = Stage, expGain = Stage * 70 };
-            for (var i = 0; i < 2 + Stage * 3; i++)
-                Spawner(new Creatures.Monster() { hp = Stage * 7, attack = Stage * 2, defence = (Stage + 1) / 2 , expGain = Stage * 10 });
-            if (rand.Next(0, 1000) < 600 + Stage * 25 )
-                Spawner(new Creatures.Armor() { AwardDefence = 1 });
-            if (rand.Next(0, 1000) < 700 - Stage * 50)
-                Spawner(new Creatures.HealingPotion());
-            if (rand.Next(0, 1000) < 600 + Stage * 25)
-                Spawner(new Creatures.Sword() { AwardAttack = 2 });
-            if (rand.Next(0, 1000) < 200 + Stage * 25)
-                Spawner(new Creatures.Grave() { AwardAttack = rand.Next(-2, 3), AwardDefence = rand.Next(-1, 2) });
-            if (rand.Next(0, 1000) > 300 + Stage * 10)
-                Spawner(new Creatures.Chest() { AwardAttack = rand.Next(0, 2), AwardExp = rand.Next(Stage * 50, Stage * 100)});
+        }
+        public static bool InsideWorld(int x, int y)
+        {
+            return x >= 0 && y >= 0 && x < MapWidth && y < MapHeight;
         }
         public static void Conflict(ICreature nextCreature, int x, int y)
         {
@@ -208,7 +270,10 @@ namespace MyRPG
             if (monster.GetCreatureType() == CreatureType.Boss)
             {
                 MessageBox.Show("You killed the boss and go to the next stage!");
-                CreateMap();
+                if (IsAdventure)
+                    MessageBox.Show("not realized");
+                else
+                    CreateRandomMap();
             }
             FightIsOver = false;
         }

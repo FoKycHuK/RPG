@@ -20,18 +20,19 @@ namespace MyRPG
         public MyWindow()
         {
             Game.ChooseMode += ChooseMode;
-            Game.Begin();
-            Game.StageChanged += ChangeBackground;
+            Game.StageChanged += ChangeStage;
             Game.Level = LevelUp;
             Game.Grave += InGrave;
-            BackgroundImage = (Bitmap)Bitmap.FromFile("Images\\" + Game.StageName + ".jpg");
+            Game.Begin();
+            ControlBox = false;
             StartPosition = FormStartPosition.CenterScreen;
             ClientSize = new Size(ElementSize * Game.MapWidth, ElementSize * Game.MapHeight + ElementSize);
             FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             Text = "RPG";
             DoubleBuffered = true;
             foreach (var e in Enum.GetValues(typeof(CreatureType)))
-                bitmaps[(CreatureType)e] = (Bitmap)Bitmap.FromFile("Images\\" + e.ToString() + ".png");
+                if ((CreatureType)e != CreatureType.Wall)
+                    bitmaps[(CreatureType)e] = (Bitmap)Bitmap.FromFile("Images\\" + e.ToString() + ".png");
             timer = new Timer();
             timer.Interval = 5;
             timer.Tick += TimerTick;
@@ -57,10 +58,6 @@ namespace MyRPG
                     });
                 }
             animations = animations.OrderByDescending(z => (int)z.Creature.GetCreatureType()).ToList();
-        }
-        void ChangeBackground()
-        {
-            this.BackgroundImage = (Bitmap)Bitmap.FromFile("Images\\" + Game.StageName + ".jpg");
         }
         protected override void OnPaint(PaintEventArgs e)
         {
@@ -110,6 +107,11 @@ namespace MyRPG
             tickCount++;
             if (tickCount == 8) tickCount = 0;
             Invalidate();
+        }
+        void ChangeStage()
+        {
+            BackgroundImage = (Bitmap)Bitmap.FromFile("Images\\" + Game.StageName + ".jpg");
+            bitmaps[CreatureType.Wall] = (Bitmap)Bitmap.FromFile("Images\\Wall-" + Game.StageName + ".png");
         }
         bool InGrave()
         {
@@ -196,9 +198,8 @@ namespace MyRPG
             form.Controls.Add(buttonAttack);
             form.ShowDialog();
         }
-        bool ChooseMode()
+        void ChooseMode()
         {
-            var answer = true;
             var form = new Form()
             {
                 ControlBox = false,
@@ -219,7 +220,11 @@ namespace MyRPG
                 Left = 15,
                 Top = 50
             };
-            buttonAttack.Click += (sender, e) => form.Close();
+            buttonAttack.Click += (sender, e) =>
+                {
+                    Game.IsAdventure = true;
+                    form.Close();
+                };
             var buttonDefence = new Button()
             {
                 Text = "Surviving",
@@ -228,14 +233,13 @@ namespace MyRPG
             };
             buttonDefence.Click += (sender, e) =>
             {
+                Game.IsAdventure = false;
                 form.Close();
-                answer = false;
             };
             form.Controls.Add(lab);
             form.Controls.Add(buttonDefence);
             form.Controls.Add(buttonAttack);
             form.ShowDialog();
-            return answer;
         }
     }
 }

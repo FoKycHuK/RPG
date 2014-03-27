@@ -8,6 +8,13 @@ namespace MyRPG.Creatures
 {
     public class Monster:ICreature, IMonster
     {
+        public Monster()
+        {
+            hp = Game.Stage * 7;
+            attack = Game.Stage * 2;
+            defence = (Game.Stage + 1) / 2;
+            expGain = Game.Stage * 10;
+        }
         CreatureCommand Move(int dx, int dy, int x, int y)
         {
             var res = new CreatureCommand

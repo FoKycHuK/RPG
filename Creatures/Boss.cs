@@ -8,6 +8,13 @@ namespace MyRPG.Creatures
 {
     class Boss:ICreature,IMonster
     {
+        public Boss()
+        {
+            hp = 0;//Game.Stage * 25;
+            attack = Game.Stage * 3;
+            defence = Game.Stage;
+            expGain = Game.Stage * 70;
+        }
         public int hp
         {
             get;

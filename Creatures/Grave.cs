@@ -8,7 +8,11 @@ namespace MyRPG.Creatures
 {
     class Grave : ICreature, ITreasure
     {
-
+        public Grave()
+        {
+            AwardAttack = Game.rand.Next(-2, 3);
+            AwardDefence = Game.rand.Next(-1, 2);
+        }
         public CreatureType GetCreatureType()
         {
             return CreatureType.Grave;
