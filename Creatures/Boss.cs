@@ -10,7 +10,7 @@ namespace MyRPG.Creatures
     {
         public Boss()
         {
-            hp = 0;//Game.Stage * 25;
+            hp = Game.Stage * 25;
             attack = Game.Stage * 3;
             defence = Game.Stage;
             expGain = Game.Stage * 70;

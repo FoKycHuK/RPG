@@ -32,8 +32,9 @@ namespace MyRPG
             ChooseMode();
             if (IsAdventure)
             {
-                MessageBox.Show("not realized");
-                Environment.Exit(0);
+                LoadAdventureMap();
+                //MessageBox.Show("not realized");
+                //Environment.Exit(0);
             }
             else
                 CreateRandomMap();
@@ -122,6 +123,12 @@ namespace MyRPG
                             break;
                         case 'P':
                             Map[j, i] = player;
+                            break;
+                        case 'm':
+                            Map[j, i] = new Creatures.StandingMonster();
+                            break;
+                        case '#':
+                            Map[j, i] = new Creatures.PowerfulMonster();
                             break;
                         default:
                             break;
@@ -271,7 +278,10 @@ namespace MyRPG
             {
                 MessageBox.Show("You killed the boss and go to the next stage!");
                 if (IsAdventure)
+                {
                     MessageBox.Show("not realized");
+                    Environment.Exit(0);
+                }
                 else
                     CreateRandomMap();
             }

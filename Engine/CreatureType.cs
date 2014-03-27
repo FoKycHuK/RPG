@@ -17,5 +17,7 @@ namespace MyRPG
         Chest,
         Grave,
         Wall,
+        StandingMonster,
+        PowerfulMonster,
     }
 }

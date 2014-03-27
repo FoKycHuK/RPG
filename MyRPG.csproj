@@ -56,6 +56,8 @@
     <Compile Include="Creatures\Boss.cs" />
     <Compile Include="Creatures\Chest.cs" />
     <Compile Include="Creatures\Grave.cs" />
+    <Compile Include="Creatures\PowerfulMonster.cs" />
+    <Compile Include="Creatures\StandingMonster.cs" />
     <Compile Include="Creatures\Sword.cs" />
     <Compile Include="Creatures\HealingPotion.cs" />
     <Compile Include="Creatures\Monster.cs" />
@@ -200,6 +202,16 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Images\Wall-Quarry.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\StandingMonster.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\PowerfulMonster.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
