@@ -215,10 +215,12 @@ namespace MyRPG
                                         var gainedExp = Game.rand.Next(0, Game.Stage * 50);
                                         player.exp += gainedExp;
                                         MessageBox.Show(string.Format("You running away and gain some exp: {0}", gainedExp));
+                                        CheckLevel();
                                     }
                                     break;
                                 default:
                                     MessageBox.Show(string.Format("You found some treasures! Gained: {0} Exp, {1} Attack, {2} Defence.", aw.AwardExp, aw.AwardAttack, aw.AwardDefence));
+                                    CheckLevel();
                                     break;
                             }
                         }
@@ -248,6 +250,11 @@ namespace MyRPG
                 player.hp -= monster.attack - player.defence;
             if (player.attack - monster.defence > 0)
                 monster.hp -= player.attack - monster.defence;
+            else
+            {
+                MessageBox.Show("Your attack less or equal than a monster defence. You lost");
+                GameOver();
+            }
             if (monster.hp <= 0 || player.hp <= 0)
                 FightIsOver = true;
         }
@@ -261,15 +268,7 @@ namespace MyRPG
         {
             MessageBox.Show("You win! Gained exp: " + monster.expGain.ToString());
             player.exp += monster.expGain;
-            while (player.exp >= player.level * 100)
-            {
-                Level();
-                player.level++;
-                player.hp = player.level * 10;
-                player.exp -= (player.level - 1) * 100;
-                if (player.exp < 0)
-                    player.exp = 0;
-            }
+            CheckLevel();
             if (monster.GetCreatureType() == CreatureType.Boss)
             {
                 MessageBox.Show("You killed the boss and go to the next stage!");
@@ -284,6 +283,18 @@ namespace MyRPG
         {
             var form = new Fight(player, monster);
             form.ShowDialog();
+        }
+        public static void CheckLevel()
+        {
+            while (player.exp >= player.level * 100)
+            {
+                Level();
+                player.level++;
+                player.hp = player.level * 10;
+                player.exp -= (player.level - 1) * 100;
+                if (player.exp < 0)
+                    player.exp = 0;
+            }
         }
         public static void GameOver()
         {

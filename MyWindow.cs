@@ -24,6 +24,7 @@ namespace MyRPG
             Game.Level += LevelUp;
             Game.Grave += InGrave;
             Game.Begin();
+            player = Game.player;
             ControlBox = false;
             StartPosition = FormStartPosition.CenterScreen;
             ClientSize = new Size(ElementSize * Game.MapWidth, ElementSize * Game.MapHeight + ElementSize);
@@ -47,8 +48,8 @@ namespace MyRPG
                 {
                     var creature = Game.Map[x, y];
                     if (creature == null) continue;
-                    if (creature.GetCreatureType() == CreatureType.Player)
-                        player = (Creatures.Player)creature;
+                    //if (creature.GetCreatureType() == CreatureType.Player)
+                    //    player = (Creatures.Player)creature;
                     var command = creature.Act(x, y);
                     animations.Add(new CreatureAnimation
                     {
