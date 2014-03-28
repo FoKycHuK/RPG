@@ -13,8 +13,8 @@ namespace MyRPG
     {
         Timer timer;
         const int ElementSize = 32;
-        Bitmap monsterIcon = (Bitmap)Bitmap.FromFile("Images\\monsterFight.png");
-        Bitmap playerIcon = (Bitmap)Bitmap.FromFile("Images\\playerFight.png");
+        Bitmap monsterIcon;
+        Bitmap playerIcon = (Bitmap)Bitmap.FromFile("Images\\player.png");
         Creatures.Player player;
         IMonster monster;
 
@@ -25,6 +25,7 @@ namespace MyRPG
             ControlBox = false;
             this.player = player;
             this.monster = monster;
+            monsterIcon = (Bitmap)Bitmap.FromFile("Images\\" + monster.GetCreatureType().ToString() + ".png");
             ClientSize = new Size(ElementSize * 5, ElementSize * 2);
             FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             Text = "FIGHT";

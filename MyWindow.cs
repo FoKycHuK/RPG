@@ -21,7 +21,7 @@ namespace MyRPG
         {
             Game.ChooseMode += ChooseMode;
             Game.StageChanged += ChangeStage;
-            Game.Level = LevelUp;
+            Game.Level += LevelUp;
             Game.Grave += InGrave;
             Game.Begin();
             ControlBox = false;

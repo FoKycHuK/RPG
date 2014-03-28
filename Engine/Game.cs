@@ -14,7 +14,7 @@ namespace MyRPG
         public static event Action StageChanged;
         public static event Func<bool> Grave;
         public static event Action ChooseMode;
-        public static Action Level;
+        public static event Action Level;
         public static Random rand = new Random();
         public static ICreature[,] Map;
         public static int MapWidth = 30;
@@ -31,11 +31,7 @@ namespace MyRPG
             Stage = 0;
             ChooseMode();
             if (IsAdventure)
-            {
                 LoadAdventureMap();
-                //MessageBox.Show("not realized");
-                //Environment.Exit(0);
-            }
             else
                 CreateRandomMap();
         }
@@ -60,17 +56,13 @@ namespace MyRPG
             StageChanged();
             Map = new ICreature[MapWidth, MapHeight];
             Map[0, 0] = player;
-            Map[2, 0] = new Creatures.Wall();
-            Map[3, 0] = new Creatures.Wall();
-            Map[4, 0] = new Creatures.Wall();
-            Map[5, 0] = new Creatures.Wall();
-            Map[10, 10] = new Creatures.Wall();
-            Map[10, 11] = new Creatures.Wall();
-            Map[11, 11] = new Creatures.Wall();
-            Map[11, 10] = new Creatures.Wall();
-            Map[5, 1] = new Creatures.Wall();
-            Map[5, 2] = new Creatures.Wall();
-            Map[1, 0] = new Creatures.Boss();
+            Map[MapWidth - 1, MapHeight - 1] = new Creatures.Boss();
+            Map[MapWidth - 1, MapHeight - 2] = new Creatures.Wall();
+            Map[MapWidth - 2, MapHeight - 2] = new Creatures.Wall();
+            Map[MapWidth - 3, MapHeight - 2] = new Creatures.Wall();
+            Map[MapWidth - 4, MapHeight - 2] = new Creatures.Wall();
+            Map[MapWidth - 5, MapHeight - 2] = new Creatures.Wall();
+            Map[MapWidth - 6, MapHeight - 2] = new Creatures.Wall();
             for (var i = 0; i < 2 + Stage * 3; i++)
                 Spawner(new Creatures.Monster());
             if (rand.Next(0, 1000) < 600 + Stage * 25 )
