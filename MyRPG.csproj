@@ -55,6 +55,7 @@
     <Compile Include="Creatures\Armor.cs" />
     <Compile Include="Creatures\Boss.cs" />
     <Compile Include="Creatures\Chest.cs" />
+    <Compile Include="Creatures\Devil.cs" />
     <Compile Include="Creatures\Grave.cs" />
     <Compile Include="Creatures\PowerfulMonster.cs" />
     <Compile Include="Creatures\StandingMonster.cs" />
@@ -222,6 +223,36 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Maps\Map3.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Maps\Map4.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Maps\Map5.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Maps\Map6.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Maps\Map0.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\Devil.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Maps\Map7.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>

@@ -19,5 +19,6 @@ namespace MyRPG
         Wall,
         StandingMonster,
         PowerfulMonster,
+        Devil,
     }
 }

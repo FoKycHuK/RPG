@@ -27,7 +27,8 @@ namespace MyRPG
 
         public static void Begin()
         {
-            player = new Creatures.Player() { hp = 10, attack = 2, defence = 1, level = 1, exp = 0 };
+            if (player == null)
+                player = new Creatures.Player() { hp = 10, attack = 2, defence = 1, level = 1, exp = 0 };
             ChooseMode();
             if (IsAdventure)
                 LoadAdventureMap();
@@ -76,12 +77,10 @@ namespace MyRPG
         public static void LoadAdventureMap()
         {
             Stage++;
-            if (Stage > 8)
-                MessageBox.Show("You complete my game. Good job! Try survival mod.");
             StageDefination();
             StageChanged();
             Map = new ICreature[MapWidth, MapHeight];
-            var file = File.ReadAllLines("Maps\\Map" + Stage + ".txt");
+            var file = File.ReadAllLines("Maps\\Map" + Stage % 8 + ".txt");
             for (var i = 0; i < MapHeight; i++)
                 for (var j = 0; j < MapWidth; j++)
                     switch (file[i][j])
@@ -118,6 +117,9 @@ namespace MyRPG
                             break;
                         case '#':
                             Map[j, i] = new Creatures.PowerfulMonster();
+                            break;
+                        case 'D':
+                            Map[j, i] = new Creatures.Devil();
                             break;
                         default:
                             break;
@@ -177,24 +179,14 @@ namespace MyRPG
                 Map[x, y] = player;
             }
             if (nextCreature is IMonster ^ Map[x, y] is IMonster)
+            {
                 if (nextCreature.GetCreatureType() == CreatureType.Player)
-                {
-                    Fight(
-                        (Creatures.Player)nextCreature,
-                        (IMonster)Map[x, y]
-                        );
-                    if (Map[x, y] != null && Map[x, y].GetCreatureType() != CreatureType.Boss)
-                        Map[x, y] = player;
-                }
+                    Fight((Creatures.Player)nextCreature, (IMonster)Map[x, y]);
                 else
-                {
-                    Fight(
-                        (Creatures.Player)Game.Map[x, y],
-                        (IMonster)nextCreature
-                        );
-                    if (nextCreature.GetCreatureType() != CreatureType.Boss)
-                        Map[x, y] = player;
-                }
+                    Fight((Creatures.Player)Map[x, y], (IMonster)nextCreature);
+                if (Map[x, y] is IMonster && Map[x, y].GetCreatureType() != CreatureType.Boss)
+                    Map[x, y] = player;
+            }
         }
         public static void FoundTreasure(ITreasure treasure)
         {
@@ -213,17 +205,17 @@ namespace MyRPG
                     if (Grave())
                     {
                         MessageBox.Show(string.Format("You entered in the grave and found curse/blessing! Gained: {0} Attack, {1} Defence.", treasure.AwardAttack, treasure.AwardDefence));
-                        if (Game.rand.Next(0, 1000) > 800)
+                        if (rand.Next(0, 1000) > 800)
                         {
                             MessageBox.Show("And you're under attack!!!");
-                            Game.Fight(player, new Creatures.PowerfulMonster());
+                            Fight(player, new Creatures.PowerfulMonster());
                         }
                     }
                     else
                     {
                         player.attack -= treasure.AwardAttack;
                         player.defence -= treasure.AwardDefence;
-                        var gainedExp = Game.rand.Next(0, Game.Stage * 50);
+                        var gainedExp = rand.Next(0, Stage * 50);
                         player.exp += gainedExp;
                         MessageBox.Show(string.Format("You running away and gain some exp: {0}", gainedExp));
                         CheckLevel();
@@ -243,8 +235,8 @@ namespace MyRPG
                 monster.hp -= player.attack - monster.defence;
             else
             {
-                MessageBox.Show("Your attack less or equal than a monster defence. You lost");
                 FightOver();
+                MessageBox.Show("Your attack less or equal than a monster defence. You lost");
                 GameOver();
             }
             if (player.hp <= 0)
@@ -265,6 +257,11 @@ namespace MyRPG
                         LoadAdventureMap();
                     else
                         CreateRandomMap();
+                }
+                if (monster.GetCreatureType() == CreatureType.Devil)
+                {
+                    MessageBox.Show("You complete my game. Good job! Try survival mod. You'll save your hero.");
+                    Begin();
                 }
             }
         }

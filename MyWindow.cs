@@ -16,6 +16,7 @@ namespace MyRPG
         Dictionary<CreatureType, Bitmap> bitmaps = new Dictionary<CreatureType, Bitmap>();
         List<CreatureAnimation> animations = new List<CreatureAnimation>();
         int tickCount;
+        int restorer;
 
         public MyWindow()
         {
@@ -66,14 +67,15 @@ namespace MyRPG
                 e.Graphics.DrawImage(bitmaps[a.Creature.GetCreatureType()], a.Location);
             e.Graphics.ResetTransform();
             if (player != null)
-                e.Graphics.DrawString(String.Format("Level:{0}  Exp:{1}/{2}  HP:{3}  Attack:{4}  Defence:{5}  Stage:{6}",
+                e.Graphics.DrawString(String.Format("Level:{0}  Exp:{1}/{2}  HP:{3}  Attack:{4}  Defence:{5}  Stage:{6}#{7}",
                     player.level, 
                     player.exp, 
                     player.level * 100, 
                     player.hp,
                     player.attack,
                     player.defence,
-                    Game.StageName), 
+                    Game.StageName,
+                    Game.Stage/8+1), 
                 new Font("Arial", 16), Brushes.White, 0, 0);
         }
 
@@ -101,7 +103,17 @@ namespace MyRPG
                 }
             }
             tickCount++;
-            if (tickCount == 8) tickCount = 0;
+            if (tickCount == 8)
+            {
+                tickCount = 0;
+                restorer++;
+                if (restorer == 35)
+                {
+                    if (player.hp < player.level * 10 && !Game.IsAdventure)
+                        player.hp+= player.level;
+                    restorer = 0;
+                }
+            }
             Invalidate();
         }
         void ChangeStage()
