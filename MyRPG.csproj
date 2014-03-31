@@ -161,47 +161,47 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Images\Map1.txt">
+    <None Include="Maps\Map1.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Images\Wall-Valley.png">
+    <None Include="Images\Walls\Wall-Valley.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Images\Wall-Cave.png">
+    <None Include="Images\Walls\Wall-Cave.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Images\Wall-Desert.png">
+    <None Include="Images\Walls\Wall-Desert.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Images\Wall-Dungeon.png">
+    <None Include="Images\Walls\Wall-Dungeon.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Images\Wall-Hell.png">
+    <None Include="Images\Walls\Wall-Hell.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Images\Wall-North.png">
+    <None Include="Images\Walls\Wall-North.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Images\Wall-Swamp.png">
+    <None Include="Images\Walls\Wall-Swamp.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Images\Wall-Quarry.png">
+    <None Include="Images\Walls\Wall-Quarry.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
@@ -216,12 +216,12 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Images\Map2.txt">
+    <None Include="Maps\Map2.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Images\Map3.txt">
+    <None Include="Maps\Map3.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>

@@ -17,12 +17,7 @@ namespace MyRPG.Creatures
         }
         CreatureCommand Move(int dx, int dy, int x, int y)
         {
-            var res = new CreatureCommand
-            {
-                DeltaX = 0,
-                DeltaY = 0,
-                NextState = CreatureType.Player
-            };
+            var res = new CreatureCommand(CreatureType.Player);
             if (!Game.InsideWorld(x + dx, y + dy) ||
                 (Game.Map[x + dx, y + dy] != null &&
                 Game.Map[x + dx, y + dy].GetCreatureType() != CreatureType.Player))
@@ -37,12 +32,7 @@ namespace MyRPG.Creatures
         }
         public CreatureCommand Act(int x, int y)
         {
-            var res = new CreatureCommand
-            {
-                DeltaX = 0,
-                DeltaY = 0,
-                NextState = CreatureType.Monster
-            };
+            var res = new CreatureCommand(CreatureType.Monster);
             var way = Game.rand.Next(0, 30);
             switch (way)
             {

@@ -11,5 +11,11 @@ namespace MyRPG
         public int DeltaX;
         public int DeltaY;
         public CreatureType NextState;
+        public CreatureCommand(CreatureType NextState)
+        {
+            this.DeltaX = 0;
+            this.DeltaY = 0;
+            this.NextState = NextState;
+        }
     }
 }

@@ -14,8 +14,8 @@ namespace MyRPG
         Timer timer;
         const int ElementSize = 32;
         Dictionary<CreatureType, Bitmap> bitmaps = new Dictionary<CreatureType, Bitmap>();
-        static List<CreatureAnimation> animations = new List<CreatureAnimation>();
-
+        List<CreatureAnimation> animations = new List<CreatureAnimation>();
+        int tickCount;
 
         public MyWindow()
         {
@@ -48,8 +48,6 @@ namespace MyRPG
                 {
                     var creature = Game.Map[x, y];
                     if (creature == null) continue;
-                    //if (creature.GetCreatureType() == CreatureType.Player)
-                    //    player = (Creatures.Player)creature;
                     var command = creature.Act(x, y);
                     animations.Add(new CreatureAnimation
                     {
@@ -62,7 +60,6 @@ namespace MyRPG
         }
         protected override void OnPaint(PaintEventArgs e)
         {
-            //e.Graphics.DrawImage((Bitmap)Bitmap.FromFile("Images\\" + Game.StageName + ".jpg"), 0, 0);
             e.Graphics.FillRectangle(Brushes.Gray, 0, 0, ElementSize * Game.MapWidth, ElementSize);
             e.Graphics.TranslateTransform(0, ElementSize);
             foreach (var a in animations)
@@ -79,8 +76,6 @@ namespace MyRPG
                     Game.StageName), 
                 new Font("Arial", 16), Brushes.White, 0, 0);
         }
-
-        int tickCount = 0;
 
         void TimerTick(object sender, EventArgs args)
         {
@@ -112,7 +107,7 @@ namespace MyRPG
         void ChangeStage()
         {
             BackgroundImage = (Bitmap)Bitmap.FromFile("Images\\" + Game.StageName + ".jpg");
-            bitmaps[CreatureType.Wall] = (Bitmap)Bitmap.FromFile("Images\\Wall-" + Game.StageName + ".png");
+            bitmaps[CreatureType.Wall] = (Bitmap)Bitmap.FromFile("Images\\Walls\\Wall-" + Game.StageName + ".png");
         }
         bool InGrave()
         {

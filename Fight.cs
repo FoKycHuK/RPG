@@ -20,7 +20,7 @@ namespace MyRPG
 
         public Fight(Creatures.Player player, IMonster monster)
         {
-
+            Game.FightOver += FightOver;
             StartPosition = FormStartPosition.CenterScreen;
             ControlBox = false;
             this.player = player;
@@ -31,14 +31,9 @@ namespace MyRPG
             Text = "FIGHT";
             DoubleBuffered = true;
             timer = new Timer();
-            timer.Interval = 400;
+            timer.Interval = 600;
             timer.Tick += TimerTick;
             timer.Start();
-        }
-
-        void Act()
-        {
-            Game.FightAct(monster);
         }
 
         protected override void OnPaint(PaintEventArgs e)
@@ -55,14 +50,13 @@ namespace MyRPG
         }
         void TimerTick(object sender, EventArgs args)
         {
-            Act();
+            Game.FightAct(monster);
             Invalidate();
-            if (Game.FightIsOver)
-            {
-                timer.Stop();
-                Game.EndOfFight(monster);
-                this.Close();
-            }
+        }
+        void FightOver()
+        {
+            timer.Stop();
+            this.Close();
         }
     }
 }

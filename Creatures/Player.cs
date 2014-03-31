@@ -13,12 +13,7 @@ namespace MyRPG.Creatures
     {
         CreatureCommand Move(int dx, int dy, int x, int y)
         {
-            var res = new CreatureCommand
-            {
-                DeltaX = 0,
-                DeltaY = 0,
-                NextState = CreatureType.Player
-            };
+            var res = new CreatureCommand(CreatureType.Player);
             if (Game.InsideWorld(x + dx, y + dy) &&
                 (Game.Map[x + dx, y + dy] == null ||
                 Game.Map[x + dx, y + dy].GetCreatureType() != CreatureType.Wall))
@@ -33,12 +28,7 @@ namespace MyRPG.Creatures
 
         public CreatureCommand Act(int x, int y)
         {
-            var res = new CreatureCommand
-            {
-                DeltaX = 0,
-                DeltaY = 0,
-                NextState = CreatureType.Player
-            };
+            var res = new CreatureCommand(CreatureType.Player);
             if (Keyboard.IsKeyDown(Key.Right))
                 return Move(1, 0, x, y);
             if (Keyboard.IsKeyDown(Key.Left))

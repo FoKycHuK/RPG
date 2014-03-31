@@ -21,12 +21,7 @@ namespace MyRPG.Creatures
         }
         public CreatureCommand Act(int x, int y)
         {
-            return new CreatureCommand
-            {
-                DeltaX = 0,
-                DeltaY = 0,
-                NextState = CreatureType.StandingMonster
-            };
+            return new CreatureCommand(CreatureType.StandingMonster);
         }
         public int hp
         {

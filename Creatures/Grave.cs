@@ -20,12 +20,7 @@ namespace MyRPG.Creatures
 
         public CreatureCommand Act(int x, int y)
         {
-            return new CreatureCommand()
-            {
-                DeltaX = 0,
-                DeltaY = 0,
-                NextState = CreatureType.Grave
-            };
+            return new CreatureCommand(CreatureType.Grave);
         }
         public int AwardAttack
         {
