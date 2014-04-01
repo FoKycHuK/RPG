@@ -13,9 +13,11 @@ namespace MyRPG
     {
         public static event Action StageChanged;
         public static event Func<bool> Grave;
-        public static event Action ChooseMode;
+        public static event Func<int> ChooseMode;
         public static event Action Level;
         public static event Action FightOver;
+        public static event Action<string> Print;
+        public static event Action NextLevel;
         public static Random rand = new Random();
         public static ICreature[,] Map;
         public static int MapWidth = 30;
@@ -23,17 +25,24 @@ namespace MyRPG
         public static Creatures.Player player;
         public static int Stage;
         public static string StageName;
-        public static bool IsAdventure;
 
         public static void Begin()
         {
             if (player == null)
                 player = new Creatures.Player() { hp = 10, attack = 2, defence = 1, level = 1, exp = 0 };
-            ChooseMode();
-            if (IsAdventure)
-                LoadAdventureMap();
-            else
-                CreateRandomMap();
+            switch (ChooseMode())
+            {
+                case 0:
+                    NextLevel += LoadAdventureMap;
+                    break;
+                case 1:
+                    NextLevel += CreateRandomMap;
+                    break;
+                case 2:
+                    NextLevel += CreateSurvivalMap;
+                    break;
+            }
+            NextLevel();
         }
         public static void Spawner(ICreature creature)
         {
@@ -49,19 +58,11 @@ namespace MyRPG
 
             }
         }
-        public static void CreateRandomMap()
+        public static void SpawnAll()
         {
-            Stage++;
-            StageDefination();
-            StageChanged();
-            Map = new ICreature[MapWidth, MapHeight];
-            Map[0, 0] = player;
-            Map[MapWidth - 1, MapHeight - 1] = new Creatures.Boss();
-            for (var i = 1; i < 7; i++)
-                Map[MapWidth - i, MapHeight - 2] = new Creatures.Wall();
             for (var i = 0; i < 2 + Stage * 3; i++)
                 Spawner(new Creatures.Monster());
-            if (rand.Next(0, 1000) < 600 + Stage * 25 )
+            if (rand.Next(0, 1000) < 600 + Stage * 25)
                 Spawner(new Creatures.Armor());
             if (rand.Next(0, 1000) < 700 - Stage * 50)
                 Spawner(new Creatures.HealingPotion());
@@ -71,7 +72,30 @@ namespace MyRPG
                 Spawner(new Creatures.Grave());
             if (rand.Next(0, 1000) > 300 + Stage * 10)
                 Spawner(new Creatures.Chest());
+        }
+        public static void CreateSurvivalMap()
+        {
+            Stage++;
+            StageDefination();
+            StageChanged();
+            Map = new ICreature[MapWidth, MapHeight];
+            Map[0, 0] = player;
+            Map[MapWidth - 1, MapHeight - 1] = new Creatures.Boss();
+            for (var i = 1; i < 7; i++)
+                Map[MapWidth - i, MapHeight - 2] = new Creatures.Wall();
+            SpawnAll();
             
+        }
+        public static void CreateRandomMap()
+        {
+            Stage++;
+            StageDefination();
+            StageChanged();
+            Map = new ICreature[MapWidth, MapHeight];
+            RandomMap.GetMap();
+            Spawner(player);
+            Spawner(new Creatures.Boss());
+            SpawnAll();
         }
 
         public static void LoadAdventureMap()
@@ -157,7 +181,6 @@ namespace MyRPG
                     StageName = "Hell";
                     break;
                 default:
-                    MessageBox.Show("Error in stage defination");
                     break;
             }
         }
@@ -196,18 +219,18 @@ namespace MyRPG
             switch (treasure.GetCreatureType())
             {
                 case CreatureType.Armor:
-                    MessageBox.Show("You found an armor better than you have. Your defence increased on 1!");
+                    Print("You found an armor better than you had. Your defence increased on 1!");
                     break;
                 case CreatureType.Sword:
-                    MessageBox.Show("You found a sword better than you have. Your attack increased on 2!");
+                    Print("You found a sword better than you had. Your attack increased on 2!");
                     break;
                 case CreatureType.Grave:
                     if (Grave())
                     {
-                        MessageBox.Show(string.Format("You entered in the grave and found curse/blessing! Gained: {0} Attack, {1} Defence.", treasure.AwardAttack, treasure.AwardDefence));
+                        Print(string.Format("You entered in the grave and found curse/blessing! Gained: {0} Attack, {1} Defence.", treasure.AwardAttack, treasure.AwardDefence));
                         if (rand.Next(0, 1000) > 800)
                         {
-                            MessageBox.Show("And you're under attack!!!");
+                            Print("And you're under attack!!!");
                             Fight(player, new Creatures.PowerfulMonster());
                         }
                     }
@@ -217,12 +240,12 @@ namespace MyRPG
                         player.defence -= treasure.AwardDefence;
                         var gainedExp = rand.Next(0, Stage * 50);
                         player.exp += gainedExp;
-                        MessageBox.Show(string.Format("You running away and gain some exp: {0}", gainedExp));
+                        Print(string.Format("You running away and gain some exp: {0}", gainedExp));
                         CheckLevel();
                     }
                     break;
                 default:
-                    MessageBox.Show(string.Format("You found treasure! Gained: {0} Exp, {1} Attack, {2} Defence.", treasure.AwardExp, treasure.AwardAttack, treasure.AwardDefence));
+                    Print(string.Format("You found treasure! Gained: {0} Exp, {1} Attack, {2} Defence.", treasure.AwardExp, treasure.AwardAttack, treasure.AwardDefence));
                     CheckLevel();
                     break;
             }
@@ -236,7 +259,7 @@ namespace MyRPG
             else
             {
                 FightOver();
-                MessageBox.Show("Your attack less or equal than a monster defence. You lost");
+                Print("Your attack less or equal than a monster defence. You lost");
                 GameOver();
             }
             if (player.hp <= 0)
@@ -247,20 +270,17 @@ namespace MyRPG
             if (monster.hp <= 0)
             {
                 FightOver();
-                MessageBox.Show("You win! Gained exp: " + monster.expGain.ToString());
+                Print("You win! Gained exp: " + monster.expGain.ToString());
                 player.exp += monster.expGain;
                 CheckLevel();
                 if (monster.GetCreatureType() == CreatureType.Boss)
                 {
-                    MessageBox.Show("You killed the boss and go to the next stage!");
-                    if (IsAdventure)
-                        LoadAdventureMap();
-                    else
-                        CreateRandomMap();
+                    Print("You killed the boss and go to the next stage!");
+                    NextLevel();
                 }
                 if (monster.GetCreatureType() == CreatureType.Devil)
                 {
-                    MessageBox.Show("You complete my game. Good job! Try survival mod. You'll save your hero.");
+                    Print("You complete my game. Good job! Try survival mod. You'll save your hero.");
                     Begin();
                 }
             }
@@ -285,7 +305,7 @@ namespace MyRPG
         }
         public static void GameOver()
         {
-            MessageBox.Show("You lost. GAME OVER.");
+            Print("You lost. GAME OVER.");
             Environment.Exit(0);
         }
     }

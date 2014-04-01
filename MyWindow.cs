@@ -20,6 +20,7 @@ namespace MyRPG
 
         public MyWindow()
         {
+            Game.Print += PrintSomething;
             Game.ChooseMode += ChooseMode;
             Game.StageChanged += ChangeStage;
             Game.Level += LevelUp;
@@ -107,9 +108,9 @@ namespace MyRPG
             {
                 tickCount = 0;
                 restorer++;
-                if (restorer == 35)
+                if (restorer == 50)
                 {
-                    if (player.hp < player.level * 10 && !Game.IsAdventure)
+                    if (player.hp < player.level * 10)
                         player.hp+= player.level;
                     restorer = 0;
                 }
@@ -120,6 +121,10 @@ namespace MyRPG
         {
             BackgroundImage = (Bitmap)Bitmap.FromFile("Images\\" + Game.StageName + ".jpg");
             bitmaps[CreatureType.Wall] = (Bitmap)Bitmap.FromFile("Images\\Walls\\Wall-" + Game.StageName + ".png");
+        }
+        void PrintSomething(string s)
+        {
+            MessageBox.Show(s);
         }
         bool InGrave()
         {
@@ -157,8 +162,8 @@ namespace MyRPG
                 answer = false;
             };
             form.Controls.Add(lab);
-            form.Controls.Add(buttonDefence);
             form.Controls.Add(buttonAttack);
+            form.Controls.Add(buttonDefence);
             form.ShowDialog();
             return answer;
         }
@@ -202,11 +207,9 @@ namespace MyRPG
                 form.Close();
             };
             form.Controls.Add(lab);
-            form.Controls.Add(buttonDefence);
-            form.Controls.Add(buttonAttack);
             form.ShowDialog();
         }
-        void ChooseMode()
+        int ChooseMode()
         {
             var form = new Form()
             {
@@ -215,6 +218,7 @@ namespace MyRPG
                 Text = "CHOOSE YOUR DESTENY!",
                 StartPosition = FormStartPosition.CenterScreen
             };
+            var ans = 0;
             var lab = new Label()
             {
                 Text = "This is RPG. You can choose one of game modes:",
@@ -222,32 +226,45 @@ namespace MyRPG
                 Left = form.Size.Width / 10,
                 Size = new Size(300, 25)
             };
-            var buttonAttack = new Button()
+            var button1 = new Button()
             {
                 Text = "Adventure",
                 Left = 15,
                 Top = 50
             };
-            buttonAttack.Click += (sender, e) =>
+            button1.Click += (sender, e) =>
                 {
-                    Game.IsAdventure = true;
+                    ans = 0;
                     form.Close();
                 };
-            var buttonDefence = new Button()
+            var button2 = new Button()
             {
-                Text = "Survival",
-                Left = form.Size.Width - buttonAttack.Width - 50,
+                Text = "Labyrint",
+                Left = form.Size.Width - button1.Width * 2 - 70,
                 Top = 50
             };
-            buttonDefence.Click += (sender, e) =>
+            button2.Click += (sender, e) =>
             {
-                Game.IsAdventure = false;
+                ans = 1;
+                form.Close();
+            };
+            var button3 = new Button()
+            {
+                Text = "Survival",
+                Left = form.Size.Width - button1.Width - 30,
+                Top = 50
+            };
+            button3.Click += (sender, e) =>
+            {
+                ans = 2;
                 form.Close();
             };
             form.Controls.Add(lab);
-            form.Controls.Add(buttonDefence);
-            form.Controls.Add(buttonAttack);
+            form.Controls.Add(button1);
+            form.Controls.Add(button2);
+            form.Controls.Add(button3);
             form.ShowDialog();
+            return ans;
         }
     }
 }

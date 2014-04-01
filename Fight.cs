@@ -31,7 +31,7 @@ namespace MyRPG
             Text = "FIGHT";
             DoubleBuffered = true;
             timer = new Timer();
-            timer.Interval = 100;
+            timer.Interval = 600;
             timer.Tick += TimerTick;
             timer.Start();
         }

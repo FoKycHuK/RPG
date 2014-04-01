@@ -71,6 +71,7 @@
     <Compile Include="Engine\ITreasure.cs" />
     <Compile Include="Engine\ICreature.cs" />
     <Compile Include="Engine\IMonster.cs" />
+    <Compile Include="Engine\RandomMap.cs" />
     <Compile Include="Fight.cs">
       <SubType>Form</SubType>
     </Compile>
