@@ -75,8 +75,6 @@ namespace MyRPG
         }
         public static void CreateSurvivalMap()
         {
-            Stage++;
-            StageDefination();
             StageChanged();
             Map = new ICreature[MapWidth, MapHeight];
             Map[0, 0] = player;
@@ -88,8 +86,6 @@ namespace MyRPG
         }
         public static void CreateRandomMap()
         {
-            Stage++;
-            StageDefination();
             StageChanged();
             Map = new ICreature[MapWidth, MapHeight];
             RandomMap.GetMap();
@@ -100,8 +96,6 @@ namespace MyRPG
 
         public static void LoadAdventureMap()
         {
-            Stage++;
-            StageDefination();
             StageChanged();
             Map = new ICreature[MapWidth, MapHeight];
             var file = File.ReadAllLines("Maps\\Map" + Stage % 8 + ".txt");

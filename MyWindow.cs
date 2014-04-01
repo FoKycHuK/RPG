@@ -119,6 +119,8 @@ namespace MyRPG
         }
         void ChangeStage()
         {
+            Game.Stage++;
+            Game.StageDefination();
             BackgroundImage = (Bitmap)Bitmap.FromFile("Images\\" + Game.StageName + ".jpg");
             bitmaps[CreatureType.Wall] = (Bitmap)Bitmap.FromFile("Images\\Walls\\Wall-" + Game.StageName + ".png");
         }
