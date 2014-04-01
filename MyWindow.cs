@@ -208,6 +208,8 @@ namespace MyRPG
                 player.defence += 1;
                 form.Close();
             };
+            form.Controls.Add(buttonAttack);
+            form.Controls.Add(buttonDefence);
             form.Controls.Add(lab);
             form.ShowDialog();
         }
